@@ -12,38 +12,33 @@ def calculate_lane_error(pred_lane, gt_lane):
     mae = np.mean(np.abs(pred - gt))
     return mae
 
-def evaluate_predictions(predictions, ground_truths):
+def evaluate_predictions(predictions, ground_truths=None):
     """
-    Evaluates a set of predictions against ground truth data.
+    Evaluates a set of predictions. If ground_truths is provided, calculates MAE.
+    Otherwise, only calculates detection rate (yield).
     predictions: dict of {filename: {"left": [x1,y1,x2,y2], "right": [x1,y1,x2,y2]}}
-    ground_truths: dict of {filename: {"left": [x1,y1,x2,y2], "right": [x1,y1,x2,y2]}}
     """
     left_errors = []
     right_errors = []
     
     left_detected_count = 0
     right_detected_count = 0
-    total_images = len(ground_truths)
+    total_images = len(predictions)
     
-    for filename, gt in ground_truths.items():
-        if filename not in predictions:
-            continue
-            
-        pred = predictions[filename]
-        
+    for filename, pred in predictions.items():
         # Left lane
         if pred["left"] is not None:
             left_detected_count += 1
-            if gt["left"] is not None:
-                err = calculate_lane_error(pred["left"], gt["left"])
+            if ground_truths and filename in ground_truths and ground_truths[filename]["left"] is not None:
+                err = calculate_lane_error(pred["left"], ground_truths[filename]["left"])
                 if err is not None:
                     left_errors.append(err)
                     
         # Right lane
         if pred["right"] is not None:
             right_detected_count += 1
-            if gt["right"] is not None:
-                err = calculate_lane_error(pred["right"], gt["right"])
+            if ground_truths and filename in ground_truths and ground_truths[filename]["right"] is not None:
+                err = calculate_lane_error(pred["right"], ground_truths[filename]["right"])
                 if err is not None:
                     right_errors.append(err)
                     

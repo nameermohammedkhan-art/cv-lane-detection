@@ -49,12 +49,16 @@ def run_evaluate(data_dir="data", split="test"):
     img_dir = os.path.join(data_dir, split)
     labels_file = os.path.join(data_dir, f"{split}_labels.json")
     
-    if not os.path.exists(img_dir) or not os.path.exists(labels_file):
-        print(f"Error: Data for split '{split}' not found.")
+    if not os.path.exists(img_dir):
+        print(f"Error: Data directory '{img_dir}' not found.")
         return
         
-    with open(labels_file, "r") as f:
-        ground_truths = json.load(f)
+    ground_truths = None
+    if os.path.exists(labels_file):
+        with open(labels_file, "r") as f:
+            ground_truths = json.load(f)
+    else:
+        print(f"Warning: Labels file '{labels_file}' not found. Evaluating detection yield only.")
         
     predictions = run_batch_detect(img_dir, output_dir=f"outputs/evaluated_{split}")
     
@@ -83,7 +87,7 @@ def main():
     parser.add_argument("--prepare-data", action="store_true", help="Generate synthetic dataset")
     parser.add_argument("--detect", type=str, help="Path to a single image for detection")
     parser.add_argument("--batch-detect", type=str, help="Path to a directory of images for batch detection")
-    parser.add_argument("--evaluate", action="store_true", help="Evaluate the system on the test dataset")
+    parser.add_argument("--evaluate", type=str, nargs='?', const="data", help="Evaluate the system on the test dataset. Provide path to data directory, defaults to 'data'")
     
     args = parser.parse_args()
     
@@ -94,7 +98,7 @@ def main():
     elif args.batch_detect:
         run_batch_detect(args.batch_detect)
     elif args.evaluate:
-        run_evaluate()
+        run_evaluate(data_dir=args.evaluate)
     else:
         parser.print_help()
 
