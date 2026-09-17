@@ -1,8 +1,0 @@
-{
-    "total_images": 90,
-    "left_lane_detection_rate": 0.8666666666666667,
-    "right_lane_detection_rate": 0.7111111111111111,
-    "left_lane_mae": 14.195512820512821,
-    "right_lane_mae": 17.1796875,
-    "overall_mae": 15.540492957746478
-}
