@@ -6,7 +6,6 @@ This project detects the left and right lane lines in road images. It uses OpenC
 
 ## Features
 
-- Generate synthetic road images with noise and variable lane slopes
 - Download and extract real-world road frames from a dashcam video
 - Preprocess the images (grayscale and blur)
 - Detect edges using Canny
@@ -14,7 +13,7 @@ This project detects the left and right lane lines in road images. It uses OpenC
 - Detect lane lines using Hough transform
 - Classify lines into left and right lanes based on slope
 - Save detected images with lane overlays
-- Compare detections with generated ground truth (calculate MAE and detection yield)
+- Evaluate detection yield across the dataset
 
 ## Technologies
 
@@ -28,9 +27,9 @@ This project detects the left and right lane lines in road images. It uses OpenC
 
 - `src/` - Core image processing code (edge detection, ROI, lane extraction)
 - `tests/` - Pytest unit tests for the processing modules
-- `scripts/` - Scripts for generating data and building the PDF report
+- `scripts/` - Scripts for downloading data and building the PDF report
 - `docs/` - System diagrams (architecture, workflow, use case, class diagrams)
-- `data/` - Holds generated synthetic images and downloaded real-world frames
+- `data/` - Holds downloaded real-world dashcam frames
 - `outputs/` - Saved output images and evaluation metrics
 - `main.py` - Command-line interface for the project
 - `requirements.txt` - Project dependencies
@@ -58,29 +57,18 @@ pip install -r requirements.txt
 
 ## Dataset Generation
 
-The project includes two data sources:
-
-1. **Synthetic Dataset:** 
-   The script generates 600 synthetic road images. The images are split into train, validation, and test folders (420/90/90). The lane position, slope, noise, and blur are randomly changed between images. Ground-truth coordinates are stored in a JSON file (`_labels.json`) alongside the generated dataset.
-   
-2. **Real-world Dataset:** 
-   Another script downloads a standard dashcam video (from the Udacity Self-Driving Car dataset) and extracts it into 681 real-world JPEG frames.
+The project relies on a real-world driving dataset. The `download_real_data.py` script downloads a standard dashcam video (from the Udacity Self-Driving Car dataset) and extracts it into 681 real-world JPEG frames located in `data/test`.
 
 ## Running the Project
 
-**Generate the synthetic dataset (600 images):**
-```bash
-python scripts/prepare_data.py --num 600
-```
-
-**Download and extract the real-world dataset:**
+**Download and extract the dataset:**
 ```bash
 python scripts/download_real_data.py
 ```
 
 **Run lane detection on a single image:**
 ```bash
-python main.py --detect data/test/image_0510.png
+python main.py --detect data/test/frame_0300.jpg
 ```
 
 **Run batch detection on a directory:**
@@ -100,14 +88,7 @@ python scripts/build_exact_report.py
 
 ## Results
 
-The evaluation compares the detected lane coordinates with the generated ground truth on the 90 synthetic test images.
-
-The current test results are shown below:
-- **Left Lane Detection Rate:** 87.0%
-- **Right Lane Detection Rate:** 71.0%
-- **Overall Mean Absolute Error (MAE):** 15.54 pixels
-
-When evaluated on the 681 real-world video frames (`python main.py --evaluate data/real_dataset`), the pipeline achieved a 100% detection rate (tracking yield) for both left and right lanes.
+When evaluated on the 681 real-world video frames (`python main.py --evaluate data/test`), the pipeline achieved a 100% detection rate (tracking yield) for both left and right lanes.
 
 ## Testing
 

@@ -93,14 +93,14 @@ def create_report():
     pdf.set_font("Arial", "BI", 20)
     pdf.cell(0, 12, "7. Design Decisions & Rationale", ln=True)
     pdf.set_font("Arial", "", 11)
-    rationale = "A real-world driving video (Udacity dataset) was used instead of a synthetic dataset to ensure the system solves a realistic problem. A custom lane extraction algorithm was implemented because relying purely on ML libraries would defeat the purpose of learning classical CV. Geometric slope filtering was selected to provide robust left/right separation."
+    rationale = "A real-world dashcam dataset was used to test the system to ensure practical applicability. A custom lane extraction algorithm was written to use classical CV instead of deep learning. Geometric slope filtering was used to split the Hough lines into left and right lanes."
     pdf.multi_cell(0, 6, rationale)
     pdf.ln(10)
     
     pdf.set_font("Arial", "BI", 20)
     pdf.cell(0, 12, "8. Implementation Details", ln=True)
     pdf.set_font("Arial", "", 11)
-    impl = "OpenCV was heavily utilized for image operations. Images are converted to grayscale and blurred. Canny's edge detection is used to find structural outlines, followed by an ROI trapezoidal mask. Hough Transform lines are found, and features like slope and intercept are computed to assign them to Left or Right groups. These segments form the input to a 1D polyfit algorithm to overlay solid lane lines."
+    impl = "OpenCV is used for image operations. Images are converted to grayscale and blurred. Canny edge detection finds structural outlines, followed by an ROI trapezoidal mask. Hough Transform finds line segments. Features like slope and intercept are calculated to assign them to Left or Right groups. A 1D polyfit algorithm overlays solid lane lines."
     pdf.multi_cell(0, 6, impl)
     pdf.ln(10)
     
@@ -108,11 +108,9 @@ def create_report():
     pdf.cell(0, 12, "9. Screenshots / Results", ln=True)
     pdf.set_font("Arial", "", 11)
     pdf.cell(0, 6, "Evaluation Results (Real-World Dashcam Data - 681 Frames):", ln=True)
-    pdf.cell(0, 6, "Left Lane Detection Rate: 100.0%", ln=True)
-    pdf.cell(0, 6, "Right Lane Detection Rate: 100.0%", ln=True)
     pdf.cell(0, 6, "Overall Tracking Yield: 100.0% coverage", ln=True)
     pdf.ln(5)
-    pdf.cell(0, 6, "Below is a sample output generated from the test set evaluation.", ln=True)
+    pdf.cell(0, 6, "Below is a sample output generated from the evaluation.", ln=True)
     
     # --- PAGE 5 ---
     pdf.add_page()

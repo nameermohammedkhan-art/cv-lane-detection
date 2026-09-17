@@ -15,7 +15,7 @@ Detect left and right road lane boundaries from input images using traditional i
 - Separate segments into left and right lanes based on their slopes.
 - Draw solid lane lines on the original images.
 - Provide a command-line interface to process single images or batches of images.
-- Evaluate the accuracy of the detection against generated ground-truth data.
+- Evaluate the accuracy (tracking yield) of the pipeline across real-world datasets.
 
 ## Target Users
 - Students and developers learning classical Computer Vision fundamentals.

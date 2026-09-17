@@ -4,8 +4,8 @@ import cv2
 
 def download_and_extract():
     video_url = "https://raw.githubusercontent.com/udacity/CarND-LaneLines-P1/master/test_videos/solidYellowLeft.mp4"
-    video_path = "data/solidYellowLeft.mp4"
-    output_dir = "data/real_dataset/test"
+    video_path = "solidYellowLeft.mp4"
+    output_dir = "data/test"
     
     os.makedirs(output_dir, exist_ok=True)
     

@@ -84,16 +84,13 @@ def run_evaluate(data_dir="data", split="test"):
 
 def main():
     parser = argparse.ArgumentParser(description="Road Lane Detection and Analysis System")
-    parser.add_argument("--prepare-data", action="store_true", help="Generate synthetic dataset")
     parser.add_argument("--detect", type=str, help="Path to a single image for detection")
     parser.add_argument("--batch-detect", type=str, help="Path to a directory of images for batch detection")
     parser.add_argument("--evaluate", type=str, nargs='?', const="data", help="Evaluate the system on the test dataset. Provide path to data directory, defaults to 'data'")
     
     args = parser.parse_args()
     
-    if args.prepare_data:
-        os.system("python scripts/prepare_data.py --num 600")
-    elif args.detect:
+    if args.detect:
         run_detect(args.detect)
     elif args.batch_detect:
         run_batch_detect(args.batch_detect)
