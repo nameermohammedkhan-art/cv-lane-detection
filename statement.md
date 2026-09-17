@@ -1,19 +1,22 @@
 # Problem Statement
 
-## Problem Statement
-Modern autonomous driving systems rely heavily on complex machine learning models to understand the road. However, these models can be opaque and computationally expensive. There is significant educational and practical value in understanding how fundamental, classical computer vision techniques can be used to extract geometric lane information from road images without relying on deep learning.
+## Title
+Road Lane Detection and Analysis Using Classical Computer Vision
+
+## Objective
+Detect left and right road lane boundaries from input images using traditional image-processing techniques, without relying on deep learning models.
 
 ## Scope
-The scope of this project is limited to identifying and drawing left and right lane boundaries on road images using a classical computer vision pipeline. The system processes static images, applies geometric and edge-based filters, extracts lines, and classifies them into left or right lanes. The project also includes a localized data generation script to provide a controllable synthetic dataset for repeatable quantitative evaluation. Real-time video processing and curved lane fitting are outside the scope.
+- Implement an image-processing pipeline using OpenCV.
+- Convert images to grayscale and apply Gaussian blur to remove noise.
+- Detect edges using the Canny edge detector.
+- Mask the image to a defined region of interest (ROI) where the road is located.
+- Extract straight line segments using the Hough Line Transform.
+- Separate segments into left and right lanes based on their slopes.
+- Draw solid lane lines on the original images.
+- Provide a command-line interface to process single images or batches of images.
+- Evaluate the accuracy of the detection against generated ground-truth data.
 
 ## Target Users
-- Students learning fundamental computer vision concepts.
-- Developers looking for a lightweight, CPU-friendly lane detection baseline.
-- Researchers interested in the geometric evaluation of line-detection algorithms.
-
-## High-Level Features
-- Extensible, modular Python pipeline for image processing.
-- Synthetic road image generator with configurable noise, blur, and slope variation.
-- Command-line interface for single-image, batch-image, and evaluation workflows.
-- Configurable Region of Interest (ROI) and Hough Transform parameters.
-- Quantitative evaluation calculating detection rate and Mean Absolute Error (MAE) based on known ground-truth coordinates.
+- Students and developers learning classical Computer Vision fundamentals.
+- Researchers testing geometry-based lane detection pipelines on dashcam footage.

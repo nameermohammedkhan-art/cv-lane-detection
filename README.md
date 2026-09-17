@@ -1,91 +1,130 @@
 # Road Lane Detection and Analysis Using Classical Computer Vision
 
 ## Overview
-This project implements a command-line computer vision system designed to detect left and right road lane boundaries from images. Instead of using deep learning or pre-trained models, the system strictly relies on classical image processing techniques to extract and estimate lane lines. It uses a synthetically generated dataset for testing and quantitative evaluation.
+
+This project detects the left and right lane lines in road images. It uses OpenCV operations such as grayscale conversion, Gaussian blur, Canny edge detection, a region of interest mask, and the Hough transform. 
 
 ## Features
-- **Classical Computer Vision Pipeline:** Uses fundamental techniques such as Grayscale conversion, Gaussian Blur, Canny Edge Detection, Region of Interest (ROI) masking, and the Hough Line Transform.
-- **Synthetic Dataset Generation:** Includes a script to generate a reproducible synthetic dataset of road images with known ground-truth lane parameters, complete with varying slopes, noise, and blur.
-- **Command-Line Interface (CLI):** Provides a simple argparse-based CLI for data generation, single-image detection, batch detection, and quantitative evaluation.
-- **Quantitative Evaluation:** Compares detected lane parameters against ground-truth data to calculate Mean Absolute Error (MAE) and detection rates.
-- **Modular Codebase:** Organizes operations into clear, single-responsibility Python modules.
 
-## Technologies Used
+- Generate synthetic road images with noise and variable lane slopes
+- Download and extract real-world road frames from a dashcam video
+- Preprocess the images (grayscale and blur)
+- Detect edges using Canny
+- Apply a region of interest (ROI) mask
+- Detect lane lines using Hough transform
+- Classify lines into left and right lanes based on slope
+- Save detected images with lane overlays
+- Compare detections with generated ground truth (calculate MAE and detection yield)
+
+## Technologies
+
 - Python 3
-- OpenCV (`cv2`)
-- NumPy
-- Pytest
+- `opencv-python` (cv2)
+- `numpy`
+- `pytest`
+- `fpdf`
 
 ## Project Structure
-```
-├── data/                  # Generated synthetic datasets (train, val, test)
-├── docs/                  # Design diagrams
-├── outputs/               # Saved output images and metrics
-├── scripts/
-│   └── prepare_data.py    # Script to generate synthetic road images
-├── src/
-│   ├── edge_detection.py  # Canny edge detection
-│   ├── evaluation.py      # Error and metric calculations
-│   ├── lane_detection.py  # Hough transform and line separation
-│   ├── pipeline.py        # Connects the processing steps
-│   ├── preprocessing.py   # Grayscale and blur functions
-│   ├── roi.py             # Region of Interest masking
-│   └── utils.py           # Helper functions for files/images
-├── tests/                 # Pytest unit tests for modules
-├── main.py                # CLI entry point
-├── README.md              # Project documentation
-└── statement.md           # Problem statement and scope
+
+- `src/` - Core image processing code (edge detection, ROI, lane extraction)
+- `tests/` - Pytest unit tests for the processing modules
+- `scripts/` - Scripts for generating data and building the PDF report
+- `docs/` - System diagrams (architecture, workflow, use case, class diagrams)
+- `data/` - Holds generated synthetic images and downloaded real-world frames
+- `outputs/` - Saved output images and evaluation metrics
+- `main.py` - Command-line interface for the project
+- `requirements.txt` - Project dependencies
+
+## Installation
+
+Create and activate a virtual environment:
+
+**Windows:**
+```bash
+python -m venv .venv
+.venv\Scripts\activate
 ```
 
-## Requirements
-To run this project, install the required dependencies:
+**Linux/Mac:**
 ```bash
-pip install opencv-python numpy pytest
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+Install the required packages:
+```bash
+pip install -r requirements.txt
 ```
 
 ## Dataset Generation
-The project relies on a synthetic dataset for reproducibility. Generate the data locally using the following command:
+
+The project includes two data sources:
+
+1. **Synthetic Dataset:** 
+   The script generates 600 synthetic road images. The images are split into train, validation, and test folders (420/90/90). The lane position, slope, noise, and blur are randomly changed between images. Ground-truth coordinates are stored in a JSON file (`_labels.json`) alongside the generated dataset.
+   
+2. **Real-world Dataset:** 
+   Another script downloads a standard dashcam video (from the Udacity Self-Driving Car dataset) and extracts it into 681 real-world JPEG frames.
+
+## Running the Project
+
+**Generate the synthetic dataset (600 images):**
 ```bash
 python scripts/prepare_data.py --num 600
 ```
-This creates 600 images split into `train`, `val`, and `test` directories inside the `data/` folder, along with JSON files containing ground-truth coordinates.
 
-## Running the Project
-Use `main.py` to interact with the system.
+**Download and extract the real-world dataset:**
+```bash
+python scripts/download_real_data.py
+```
 
-**1. Detect lanes in a single image:**
+**Run lane detection on a single image:**
 ```bash
 python main.py --detect data/test/image_0510.png
 ```
 
-**2. Detect lanes in a batch of images:**
+**Run batch detection on a directory:**
 ```bash
-python main.py --batch-detect data/test/
+python main.py --batch-detect data/test
 ```
-The processed images with lane overlays are saved in `outputs/detected/`.
 
-## Evaluation
-To evaluate the system against the known ground-truth parameters in the test set, run:
+**Run evaluation against the test set:**
 ```bash
 python main.py --evaluate
 ```
-This calculates the Left and Right Lane Detection Rates and Mean Absolute Error (MAE), saving the results to `outputs/metrics.json`.
 
-## Testing
-The project uses Pytest to verify functional behavior. Run the tests with:
+**Generate the PDF report:**
 ```bash
-python -m pytest tests/
+python scripts/build_exact_report.py
 ```
 
-## Example Output
-When running the detection on an image, the CLI outputs details such as:
+## Results
+
+The evaluation compares the detected lane coordinates with the generated ground truth on the 90 synthetic test images.
+
+The current test results are shown below:
+- **Left Lane Detection Rate:** 87.0%
+- **Right Lane Detection Rate:** 71.0%
+- **Overall Mean Absolute Error (MAE):** 15.54 pixels
+
+When evaluated on the 681 real-world video frames (`python main.py --evaluate data/real_dataset`), the pipeline achieved a 100% detection rate (tracking yield) for both left and right lanes.
+
+## Testing
+
+Pytest tests are included for preprocessing, edge detection, ROI processing, lane geometry logic, and the main pipeline.
+
+Running `pytest tests/` returns:
 ```text
-Input: data/test/image_0510.png
-Left lane detected: yes
-Right lane detected: yes
-Output: outputs/detected/image_0510.png
+tests\test_edge_detection.py .
+tests\test_lane_detection.py ...
+tests\test_pipeline.py .
+tests\test_preprocessing.py ...
+tests\test_roi.py ..
+============================= 10 passed in 0.10s ==============================
 ```
 
 ## Limitations
-- The system struggles slightly with extreme lane curvature or varying lighting conditions since thresholds for Canny and Hough transforms are fixed.
-- Because it uses classical geometric filtering, lines that are too short or obscured by heavy noise may not be grouped correctly into left or right lanes.
+
+- Fixed Canny thresholds and Hough parameters may fail when the lane is heavily blurred or the lighting changes significantly.
+- The region of interest mask assumes a centered, forward-facing dashboard camera. It cuts off the top half of the image. If the camera angle changes, the ROI coordinates in `src/roi.py` must be updated.
+- The pipeline relies on straight line equations (1D polyfit), so it struggles to draw accurate overlays on sharp, continuous curves.
