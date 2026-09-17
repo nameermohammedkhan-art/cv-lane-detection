@@ -27,7 +27,6 @@ This project detects the left and right lane lines in road images. It uses OpenC
 
 - `src/` - Core image processing code (edge detection, ROI, lane extraction)
 - `tests/` - Pytest unit tests for the processing modules
-- `scripts/` - Scripts for downloading data and building the PDF report
 - `docs/` - System diagrams (architecture, workflow, use case, class diagrams)
 - `data/` - Holds downloaded real-world dashcam frames
 - `outputs/` - Saved output images and evaluation metrics
@@ -55,16 +54,11 @@ Install the required packages:
 pip install -r requirements.txt
 ```
 
-## Dataset Generation
+## Dataset
 
-The project relies on a real-world driving dataset. The `download_real_data.py` script downloads a standard dashcam video (from the Udacity Self-Driving Car dataset) and extracts it into 681 real-world JPEG frames located in `data/test`.
+The project relies on a real-world driving dataset containing 681 real-world JPEG frames located in `data/test`.
 
 ## Running the Project
-
-**Download and extract the dataset:**
-```bash
-python scripts/download_real_data.py
-```
 
 **Run lane detection on a single image:**
 ```bash
@@ -79,11 +73,6 @@ python main.py --batch-detect data/test
 **Run evaluation against the test set:**
 ```bash
 python main.py --evaluate
-```
-
-**Generate the PDF report:**
-```bash
-python scripts/build_exact_report.py
 ```
 
 ## Results
